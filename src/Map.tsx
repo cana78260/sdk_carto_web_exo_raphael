@@ -5,15 +5,16 @@ import "./Map.css";
 // import maplibreGl from "maplibre-gl";
 
 export default function Map() {
+
   const mapContainer = useRef(null);
   // const map = useRef(null);
-  const [lng] = useState(139.753);
-  const [lat] = useState(35.6844);
-  const [zoom] = useState(14);
-  const [API_KEY] = useState("9OtZMzivFN1ge2FV3UAL");
+  const lng =139.753;
+  const lat = 35.6844;
+  const zoom = 14;
+  const API_KEY = "9OtZMzivFN1ge2FV3UAL";
 
   useEffect(() => {
-    // if (map.current) return; // stops map from intializing more than once
+
 
   const map = new maplibregl.Map({
       container: mapContainer.current || "",
@@ -28,9 +29,18 @@ export default function Map() {
          .addTo(map);
   }, [API_KEY, lng, lat, zoom]);
 
+
+ 
+
   return (
     <div className="map-wrap">
       <div ref={mapContainer} className="map" />
+      <div className="DisplayZoomLevel">
+        <p>
+          niveau de zoom: <span className="spanZoom">{zoom}</span>
+        
+        </p>
+      </div>
     </div>
   );
 }

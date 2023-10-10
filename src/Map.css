@@ -13,6 +13,43 @@
 .sdk_container{
   padding-top: 10px;
   height: 500px;
-  width: 1000px;
+  width: 90%;
   margin: auto;
+}
+
+.DisplayZoomLevel{
+ z-index: 2;
+  position: absolute;
+ margin: 10px 10px 0 0;
+ right: -0.09em;
+ top: 4.8em;
+ float: right;
+
+}
+
+.DisplayZoomLevel p{
+  font-weight: bold ;
+}
+
+
+
+.spanZoom{
+
+  border:2.9px solid lightgrey;
+  background-color: white;
+  border-radius: 4px;
+  font-size: large;
+  font-weight: bold;
+  padding:3.5px 3.5px;
+}
+
+
+@media screen and (max-width:400px){
+.sdk_container{
+  padding-top: 10px;
+  height: auto;
+  width: 90%;
+ 
+} 
+ 
 }
