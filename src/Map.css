@@ -29,6 +29,8 @@
 
 .DisplayZoomLevel p{
   font-weight: bold ;
+  padding-right: 3px;
+
 }
 
 
@@ -38,9 +40,11 @@
   border:2.9px solid lightgrey;
   background-color: white;
   border-radius: 4px;
-  font-size: large;
+  font-size: 1em;
   font-weight: bold;
-  padding:3.5px 3.5px;
+  padding:3px 2px;
+
+
 }
 
 
