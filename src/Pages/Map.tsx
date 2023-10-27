@@ -10,8 +10,8 @@ import geojson from "geojson";
 export default function Map() {
   const mapContainer = useRef(null);
 
-  const lng = [139.753, 138.562];
-  const lat = [35.6844, 33.5864];
+  const lng = 139.753;
+  const lat = 35.6844;
 
   const defaultZoomLevel = 14;
   const [zoomLevel, setZoomLevel] = useState<number>(defaultZoomLevel);
@@ -24,7 +24,7 @@ export default function Map() {
     const map = new maplibregl.Map({
       container: mapContainer.current || "",
       style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${API_KEY}`,
-      center: [lng[0], lat[0]],
+      center: [lng, lat],
       zoom: defaultZoomLevel,
     });
 
@@ -38,7 +38,7 @@ export default function Map() {
 
     map.addControl(new maplibregl.NavigationControl(), "top-right");
     new maplibregl.Marker({ color: "#FF0000" })
-      .setLngLat([lng[0], lat[0]])
+      .setLngLat([lng, lat])
       .addTo(map);
   }, []);
 
