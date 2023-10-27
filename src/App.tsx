@@ -1,8 +1,9 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Navbar from './NavBar';
-import Map from './Map';
+import Navbar from './Components/NavBar';
+import Map from './Pages/Map';
+import Markers from './Components/Markers';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
      <div className='sdk_container'>
       <Map/>
      </div>
+     <Markers/>
     </div>
   );
 }
