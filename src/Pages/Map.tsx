@@ -20,7 +20,7 @@ export default function Map() {
   const API_KEY = "UdqcpQrjVZzZzvNptXPW";
 
   const disabledMarkers = document.querySelector(".disableMarker");
-
+  const enabledMarkers = document.querySelector(".enableMarker");
 const geoJson = 
 {
       type: "FeatureCollection",
@@ -167,10 +167,19 @@ console.log(geoJson.features)
      disabledMarkers?.addEventListener('click',()=> {
       // const coordinates = feature.geometry.coordinates;
        tab.forEach((marker)=>{
-        console.log(marker.getLngLat())
+        console.log("marker")
         marker.remove();
        })
     })
+
+       enabledMarkers?.addEventListener("click", () => {
+         // const coordinates = feature.geometry.coordinates;
+         tab.forEach((marker) => {
+           marker.addTo(map);
+         });
+       });
+
+
   });
   map.on("moveend", () => {
     let currentMapZoom = map.getZoom();
