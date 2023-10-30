@@ -1,9 +1,10 @@
 import React, { useRef, useEffect, useState } from "react";
 import maplibregl from "maplibre-gl";
+import mapboxgl from "mapbox-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./Map.css";
 import ZoomLevel from "../Components/ZoomLevel";
-import geojson from "geojson";
+import geoJson from "../../feature.json";
 
 
 
@@ -28,6 +29,8 @@ export default function Map() {
       zoom: defaultZoomLevel,
     });
 
+
+    // geoJson.features.map((feature) => new map)
 // var featureLayer = L.mapbox.featureLayer(geojson).addTo(map);
 // featureLayer.loadUrl()
 map.on('load', ()=>{
@@ -54,9 +57,9 @@ map.on('load', ()=>{
         },
         {
           'type': 'Feature',
-          'properties': {
-            'title': 'OSAKA',
-          },
+          // 'properties': {
+          //   'title': 'OSAKA',
+          // },
           'geometry': { 
             'type': 'Point',
             'coordinates': [135.502, 34.693]
@@ -65,9 +68,9 @@ map.on('load', ()=>{
         },
         {
           'type': 'Feature',
-          'properties': {
-            'title': 'YODOGAWA',
-          },
+          // 'properties': {
+          //   'title': 'YODOGAWA',
+          // },
           'geometry': {
             'type': 'Point',
             'coordinates': [135.291, 34.435],
@@ -75,9 +78,9 @@ map.on('load', ()=>{
         },
         {
           'type': 'Feature',
-          'properties': {
-            'title': 'AMAGASAKI',
-          },
+          // 'properties': {
+          //   'title': 'AMAGASAKI',
+          // },
           'geometry': {
             'type': 'point',
             'coordinates': [135.25, 34.43],
@@ -86,7 +89,27 @@ map.on('load', ()=>{
       ],
     },
   });
-  
+  map.addLayer({
+    'id': 'id',
+    'type': 'fill',
+    'source': 'japan',
+    'paint': {
+      "fill-color": '#888888',
+      "fill-opacity": 0.4,
+    },
+    'filter': ['==', '$type', 'Polygon'],
+  });
+
+  map.addLayer({
+    'id': 'id-point',
+    'type':'circle',
+    'source':'japan',
+    'paint': {
+      'circle-radius': 6,
+      'circle-color': '#B42222'
+    },
+    'filter': ['==','$type','Point']
+  });
 })
 
 
