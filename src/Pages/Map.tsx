@@ -10,8 +10,8 @@ import geojson from "geojson";
 export default function Map() {
   const mapContainer = useRef(null);
 
-  const lng = 139.753;
-  const lat = 35.6844;
+  const lng = 135.502;
+  const lat = 34.693;
 
   const defaultZoomLevel = 14;
   const [zoomLevel, setZoomLevel] = useState<number>(defaultZoomLevel);
@@ -30,6 +30,65 @@ export default function Map() {
 
 // var featureLayer = L.mapbox.featureLayer(geojson).addTo(map);
 // featureLayer.loadUrl()
+map.on('load', ()=>{
+  map.addSource('japan', {
+    'type': 'geojson',
+    'data': {
+      'type': 'FeatureCollection',
+      'features': [
+        {
+          'type': 'Feature',
+          'properties': {},
+          'geometry': {
+            'type': 'Polygon',
+            'coordinates': [
+              [
+                [135.3460693359375, 34.709726932134586],
+                [135.4844284057617, 34.59110646239981],
+                [135.54725646972656, 34.79970851207568],
+                [135.41301727294922, 34.77151167170742],
+                [135.3460693359375, 34.709726932134586],
+              ],
+            ],
+          },
+        },
+        {
+          'type': 'Feature',
+          'properties': {
+            'title': 'OSAKA',
+          },
+          'geometry': { 
+            'type': 'Point',
+            'coordinates': [135.502, 34.693]
+          
+          },
+        },
+        {
+          'type': 'Feature',
+          'properties': {
+            'title': 'YODOGAWA',
+          },
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [135.291, 34.435],
+          },
+        },
+        {
+          'type': 'Feature',
+          'properties': {
+            'title': 'AMAGASAKI',
+          },
+          'geometry': {
+            'type': 'point',
+            'coordinates': [135.25, 34.43],
+          },
+        },
+      ],
+    },
+  });
+  
+})
+
 
   map.on("moveend", () => {
     let currentMapZoom = map.getZoom();

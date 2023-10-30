@@ -1,6 +1,6 @@
-import "./Markers.css";
+import "./MarkerButtons.css";
 
-const Markers = () => {
+const MarkerButtons = () => {
 
 
 
@@ -17,4 +17,4 @@ const Markers = () => {
     );
 }
 
-export default Markers
+export default MarkerButtons

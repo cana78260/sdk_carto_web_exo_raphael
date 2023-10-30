@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Navbar from './Components/NavBar';
 import Map from './Pages/Map';
-import Markers from './Components/Markers';
+import MarkerButtons from './Components/MarkerButtons';
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
      <div className='sdk_container'>
       <Map/>
      </div>
-     <Markers/>
+     <MarkerButtons/>
     </div>
   );
 }
