@@ -1,198 +1,183 @@
 import React, { useRef, useEffect, useState } from "react";
-import maplibregl, { Marker } from "maplibre-gl";
-import mapboxgl from "mapbox-gl";
+import maplibregl, {  MapLibreGL, Marker } from "maplibre-gl";
+
 import "maplibre-gl/dist/maplibre-gl.css";
+
 import "./Map.css";
+
 import ZoomLevel from "../Components/ZoomLevel";
-import geoJson from "../../feature.json";
+import MarkerButtons from "../Components/MarkerButtons";
+
+
+
+const LNG = 135.502;
+const LAT = 34.693;
+const DEFAULT_ZOOM_LEVEL = 11;
+const API_KEY = "UdqcpQrjVZzZzvNptXPW";
 
 
 
 export default function Map() {
+
   const mapContainer = useRef(null);
+  const [zoomLevel, setZoomLevel] = useState<number>(DEFAULT_ZOOM_LEVEL);
+ 
 
-  const lng = 135.502;
-  const lat = 34.693;
+ const map = useRef<maplibregl.Map|null>(null);
 
-  const defaultZoomLevel = 14;
-  const [zoomLevel, setZoomLevel] = useState<number>(defaultZoomLevel);
-
-  const API_KEY = "UdqcpQrjVZzZzvNptXPW";
-
-  const disabledMarkers = document.querySelector(".disableMarker");
-  const enabledMarkers = document.querySelector(".enableMarker");
-const geoJson = 
-{
-      type: "FeatureCollection",
-      features: [
-        {
-       
-          type: "Feature",
-          properties: {
-            title: "OSAKA",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [135.502, 34.693],
-          },
+  const geoJson = {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        properties: {
+          title: "OSAKA",
         },
-        {
-          type: "Feature",
-          properties: {
-            title: "SUITA",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [135.529, 34.7614],
-          },
+        geometry: {
+          type: "Point",
+          coordinates: [135.502, 34.693],
         },
-        {
-          type: "Feature",
-          properties: {
-            title: "AMAGASAKI",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [135.4095, 34.7069],
-          },
+      },
+      {
+        type: "Feature",
+        properties: {
+          title: "SUITA",
         },
-      ],
-    }
-
-
-  
-
+        geometry: {
+          type: "Point",
+          coordinates: [135.529, 34.7614],
+        },
+      },
+      {
+        type: "Feature",
+        properties: {
+          title: "AMAGASAKI",
+        },
+        geometry: {
+          type: "Point",
+          coordinates: [135.4095, 34.7069],
+        },
+      },
+    ],
+  };
 
   useEffect(() => {
-    const map = new maplibregl.Map({
+    //  const disabledMarkers = document.querySelector(".disableMarker");
+    //  const enabledMarkers = document.querySelector(".enableMarker");
+
+      map.current = new maplibregl.Map({
       container: mapContainer.current || "",
       style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${API_KEY}`,
-      center: [lng, lat],
-      zoom: defaultZoomLevel,
+      center: [LNG, LAT],
+      zoom: DEFAULT_ZOOM_LEVEL,
+    });
+   
+    
+    map.current.on("load", () => {
+  
+      map.current!.loadImage(
+        "marker.png",
+        (err, img) => {
+          if (err) throw err;
+          if (img) map.current!.addImage("marker", img);
+          console.log(img);
+          map.current!.addSource("japan", {
+            type: "geojson",
+            data: geoJson,
+          });
+          map.current!.addLayer({
+            id: "japan",
+            type: "symbol",
+            source: "japan",
+            layout: {
+              "icon-image": "marker",
+              "icon-size": 0.04,
+            },
+            // filter: ["==", "icon", "cat"],
+          });
+        }
+      );
+      // map.addSource("japan", {
+      //   type: "geojson",
+      //   data: geoJson,
+      // });
+
+      // map.addLayer({
+      //   id: "points",
+      //   type: "circle",
+      //   source: "japan",
+      //   paint: {
+      //     "circle-radius": 6,
+      //     "circle-color": "#B42222",
+      //   },
+      //   filter: ["==", "$type", "Point"],
+      // });
+    });
+    console.log("feature", geoJson.features);
+    // const tab: Marker[] = [];
+    // geoJson.features.forEach((feature) => {
+    // const marker = document.createElement("div");
+    // marker.className = "marker";
+    // if (feature.geometry.type === "Point" && feature.geometry.coordinates) {
+    // const coordinates = feature.geometry.coordinates;
+    // enabledMarkers?.addEventListener("click", () => {
+    //   map.addLayer()
+
+    //   disabledMarkers?.addEventListener("click", () => {
+    //     map.removeLayer()
+    //   });
+
+    // new maplibregl.Marker({ element: marker })
+    //   .setLngLat([coordinates[0], coordinates[1]])
+    //   .addTo(map);
+    // });
+    // }
+    // if (feature.geometry.type === "Point" && feature.geometry.coordinates) {
+    //   const coordinates = feature.geometry.coordinates;
+
+    //   tab.push(
+    //     new maplibregl.Marker({ color: "#FF0000" })
+    //       .setLngLat([coordinates[0], coordinates[1]])
+    //       .addTo(map)
+    //   );
+    // }
+    //visibility: "visible"| "none"
+
+    // disabledMarkers?.addEventListener("click", () => {
+    //   tab.forEach((marker) => {
+    //     marker.remove();
+    //   });
+    // });
+
+    // enabledMarkers?.addEventListener("click", () => {
+    //   tab.forEach((marker) => {
+    //     marker.addTo(map);
+    //   });
+    // });
+    // });
+
+    map.current.on("moveend", () => {
+      let currentMapZoom = map.current!.getZoom();
+      setZoomLevel(Number(currentMapZoom.toFixed(1)));
     });
 
+    map.current.addControl(new maplibregl.NavigationControl(), "top-right");
 
-    // geoJson.features.map((feature) => new map)
-// var featureLayer = L.mapbox.featureLayer(geojson).addTo(map);
-// featureLayer.loadUrl()
-map.on('load', ()=>{
-  map.addSource("japan", {
-    type: "geojson",
-    data: geoJson
-    // {
-    //   type: "FeatureCollection",
-    //   features: [
-    //     {
-    //     //   type: "Feature",
-    //     //   properties: {},
-    //     //   geometry: {
-    //     //     type: "Polygon",
-    //     //     coordinates: [
-    //     //       [
-    //     //         [135.3460693359375, 34.709726932134586],
-    //     //         [135.4844284057617, 34.59110646239981],
-    //     //         [135.54725646972656, 34.79970851207568],
-    //     //         [135.41301727294922, 34.77151167170742],
-    //     //         [135.3460693359375, 34.709726932134586],
-    //     //       ],
-    //     //     ],
-    //     //   },
-    //     // },
-    //     // {
-    //       type: "Feature",
-    //       properties: {
-    //         title: "OSAKA",
-    //       },
-    //       geometry: {
-    //         type: "Point",
-    //         coordinates: [135.502, 34.693],
-    //       },
-    //     },
-    //     {
-    //       type: "Feature",
-    //       properties: {
-    //         title: "SUITA",
-    //       },
-    //       geometry: {
-    //         type: "Point",
-    //         coordinates: [135.529, 34.7614],
-    //       },
-    //     },
-    //     {
-    //       type: "Feature",
-    //       properties: {
-    //         title: "AMAGASAKI",
-    //       },
-    //       geometry: {
-    //         type: "Point",
-    //         coordinates: [135.4095, 34.7069],
-    //       },
-    //     },
-    //   ],
-    // },
-  });
-  // map.addLayer({
-  //   'id': 'polygone',
-  //   'type': 'fill',
-  //   'source': 'japan',
-  //   'paint': {
-  //     "fill-color": '#888888',
-  //     "fill-opacity": 0.4,
-  //   },
-  //   'filter': ['==', '$type', 'Polygon'],
-  // });
-
-  map.addLayer({
-    'id': 'points',
-    'type':'circle',
-    'source':'japan',
-    'paint': {
-      'circle-radius': 6,
-      'circle-color': '#B42222'
-    },
-    'filter': ['==','$type','Point']
-  });
-})
-console.log(geoJson.features)
- const tab: Marker[] = [];
-  geoJson.features.forEach((feature) => {
-    if (feature.geometry.type === "Point" && feature.geometry.coordinates) {
-      const coordinates = feature.geometry.coordinates;
-     
-       tab.push(new maplibregl.Marker({ color: "#FF0000" })
-         .setLngLat([coordinates[0],coordinates[1]])
-         .addTo(map));
-
-    }
-     disabledMarkers?.addEventListener('click',()=> {
-      // const coordinates = feature.geometry.coordinates;
-       tab.forEach((marker)=>{
-        console.log("marker")
-        marker.remove();
-       })
-    })
-
-       enabledMarkers?.addEventListener("click", () => {
-         // const coordinates = feature.geometry.coordinates;
-         tab.forEach((marker) => {
-           marker.addTo(map);
-         });
-       });
-
-
-  });
-  map.on("moveend", () => {
-    let currentMapZoom = map.getZoom();
-    setZoomLevel(Number(currentMapZoom.toFixed(1)));
-  });
-
-    map.addControl(new maplibregl.NavigationControl(), "top-right");
-    // new maplibregl.Marker({ color: "#FF0000" })
-    //   .setLngLat([lng, lat])
-    //   .addTo(map);
+    // setEnableLayerEventButton(enableEventButton)
   
-    
   }, []);
+
+const disableEventButton = (e: React.MouseEvent<HTMLButtonElement>) => {
+  if (e) map.current!.setLayoutProperty("japan", "visibility", "none");
+};
+
+
+    const enableEventButton = (e: React.MouseEvent<HTMLButtonElement>) => {
+    map.current!.setLayoutProperty("japan", "visibility", "visible");
+
+    };
+
+
 
   return (
     <div className="map-wrap">
@@ -201,6 +186,12 @@ console.log(geoJson.features)
         <p>
           <ZoomLevel zoom={zoomLevel} />
         </p>
+      </div>
+      <div>
+        <MarkerButtons
+          handleEnableClickProps={enableEventButton}
+          handleDisableClickProps={disableEventButton}
+        />
       </div>
     </div>
   );

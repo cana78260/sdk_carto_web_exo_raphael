@@ -21,7 +21,7 @@
  z-index: 2;
   position: absolute;
  margin: 10px 10px 0 0;
- right: -0.09em;
+ right: -0.45em;
  top: 4.8em;
  float: right;
 
@@ -33,7 +33,13 @@
 
 }
 
-
+ .marker {
+        display: block;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        padding: 0;
+    }
 
 .spanZoom{
 

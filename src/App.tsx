@@ -12,7 +12,7 @@ function App() {
      <div className='sdk_container'>
       <Map/>
      </div>
-     <MarkerButtons/>
+     {/* <MarkerButtons handleClickProps={}/> */}
     </div>
   );
 }
