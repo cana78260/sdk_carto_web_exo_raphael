@@ -2,8 +2,8 @@ import React from "react";
 import "./MarkerButtons.css";
 
 interface MarkerProps {
-  handleEnableClickProps: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  handleDisableClickProps: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  handleEnableClickProps: () => void;
+  handleDisableClickProps: () => void;
 }
 
 
@@ -11,12 +11,12 @@ const MarkerButtons = ({
   handleEnableClickProps,
   handleDisableClickProps
 }: MarkerProps) => {
-  const handleEnableClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    handleEnableClickProps(e);
+  const handleEnableClick = () => {
+    handleEnableClickProps();
   };
 
-  const handleDisableClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    handleDisableClickProps(e);
+  const handleDisableClick = () => {
+    handleDisableClickProps();
   };
 
   return (

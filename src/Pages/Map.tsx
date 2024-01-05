@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import maplibregl, {  MapLibreGL, Marker } from "maplibre-gl";
+import maplibregl, { MapLibreGL, Marker } from "maplibre-gl";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -8,22 +8,16 @@ import "./Map.css";
 import ZoomLevel from "../Components/ZoomLevel";
 import MarkerButtons from "../Components/MarkerButtons";
 
-
-
 const LNG = 135.502;
 const LAT = 34.693;
 const DEFAULT_ZOOM_LEVEL = 11;
 const API_KEY = "UdqcpQrjVZzZzvNptXPW";
 
-
-
 export default function Map() {
-
   const mapContainer = useRef(null);
   const [zoomLevel, setZoomLevel] = useState<number>(DEFAULT_ZOOM_LEVEL);
- 
 
- const map = useRef<maplibregl.Map|null>(null);
+  const map = useRef<maplibregl.Map | null>(null);
 
   const geoJson = {
     type: "FeatureCollection",
@@ -65,119 +59,68 @@ export default function Map() {
     //  const disabledMarkers = document.querySelector(".disableMarker");
     //  const enabledMarkers = document.querySelector(".enableMarker");
 
-      map.current = new maplibregl.Map({
+    map.current = new maplibregl.Map({
       container: mapContainer.current || "",
       style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${API_KEY}`,
       center: [LNG, LAT],
       zoom: DEFAULT_ZOOM_LEVEL,
     });
-   
-    
+
     map.current.on("load", () => {
-  
-      map.current!.loadImage(
-        "marker.png",
-        (err, img) => {
-          if (err) throw err;
-          if (img) map.current!.addImage("marker", img);
-          console.log(img);
-          map.current!.addSource("japan", {
-            type: "geojson",
-            data: geoJson,
-          });
-          map.current!.addLayer({
-            id: "japan",
-            type: "symbol",
-            source: "japan",
-            layout: {
-              "icon-image": "marker",
-              "icon-size": 0.04,
-            },
-            // filter: ["==", "icon", "cat"],
-          });
-        }
-      );
-      // map.addSource("japan", {
-      //   type: "geojson",
-      //   data: geoJson,
-      // });
-
-      // map.addLayer({
-      //   id: "points",
-      //   type: "circle",
-      //   source: "japan",
-      //   paint: {
-      //     "circle-radius": 6,
-      //     "circle-color": "#B42222",
-      //   },
-      //   filter: ["==", "$type", "Point"],
-      // });
+      if (map.current) {
+        map.current.loadImage("marker.png", (err, img) => {
+          if (map.current) {
+            if (err) throw err;
+            if (img) map.current!.addImage("marker", img);
+            console.log(img);
+            map.current.addSource("japan", {
+              type: "geojson",
+              data: geoJson,
+            });
+            map.current.addLayer({
+              id: "japan",
+              type: "symbol",
+              source: "japan",
+              layout: {
+                "icon-image": "marker",
+                "icon-size": 0.04,
+              },
+              // filter: ["==", "icon", "cat"],
+            });
+          }
+        });
+      }
     });
-    console.log("feature", geoJson.features);
-    // const tab: Marker[] = [];
-    // geoJson.features.forEach((feature) => {
-    // const marker = document.createElement("div");
-    // marker.className = "marker";
-    // if (feature.geometry.type === "Point" && feature.geometry.coordinates) {
-    // const coordinates = feature.geometry.coordinates;
-    // enabledMarkers?.addEventListener("click", () => {
-    //   map.addLayer()
-
-    //   disabledMarkers?.addEventListener("click", () => {
-    //     map.removeLayer()
-    //   });
-
-    // new maplibregl.Marker({ element: marker })
-    //   .setLngLat([coordinates[0], coordinates[1]])
-    //   .addTo(map);
-    // });
-    // }
-    // if (feature.geometry.type === "Point" && feature.geometry.coordinates) {
-    //   const coordinates = feature.geometry.coordinates;
-
-    //   tab.push(
-    //     new maplibregl.Marker({ color: "#FF0000" })
-    //       .setLngLat([coordinates[0], coordinates[1]])
-    //       .addTo(map)
-    //   );
-    // }
-    //visibility: "visible"| "none"
-
-    // disabledMarkers?.addEventListener("click", () => {
-    //   tab.forEach((marker) => {
-    //     marker.remove();
-    //   });
-    // });
-
-    // enabledMarkers?.addEventListener("click", () => {
-    //   tab.forEach((marker) => {
-    //     marker.addTo(map);
-    //   });
-    // });
-    // });
 
     map.current.on("moveend", () => {
       let currentMapZoom = map.current!.getZoom();
+
       setZoomLevel(Number(currentMapZoom.toFixed(1)));
     });
 
     map.current.addControl(new maplibregl.NavigationControl(), "top-right");
 
-    // setEnableLayerEventButton(enableEventButton)
-  
+    //---------------------------------------------------!!!!!!!!!!!!!!!!!!-------------------------------------------------------
+    //La clean-up fonction permet d'éviter les effets de bord éventuels lors de la fin du cycle de vie du composant, le double render inhérent aux nouvelles versions de react est géré via ces fonctions
+    //React 18 introduit la notion d'accès concurrent aux renders qui ne sont plus séquentiels (on n'attend plus la fin d'un render pour passer à un autre => blocking rendering/concurrent features)
+    //Il réduit les ré-renders à 1 seul si un groupe de setters (setLoading(...), setError(...), setData(...)) se trouvent dans une promesse, un setTimeout() ou un eventhandler natif
+    //  <Suspense fallback={<.../>}>
+    //     <myComponent/>
+    //  </Suspense> permet d'introduire avec un code limité les echecs éventuels ou différer le render d'un composant lent car complexe à render ou issu d'une connexion lente côté client
+    //Gérer le caractère urgent ou non-urgent d'un state avec startTransition(()=>{setState(...)})
+    //----------------------------------------------------------------------------------------------------------------------------
+    return () => {
+      map.current?.remove();
+    };
   }, []);
 
-const disableEventButton = (e: React.MouseEvent<HTMLButtonElement>) => {
-  if (e) map.current!.setLayoutProperty("japan", "visibility", "none");
-};
+  const disableEventButton = () => {
+    map.current?.setLayoutProperty("japan", "visibility", "none");
+  };
 
-
-    const enableEventButton = (e: React.MouseEvent<HTMLButtonElement>) => {
-    map.current!.setLayoutProperty("japan", "visibility", "visible");
-
-    };
-
-
+  const enableEventButton = () => {
+    map.current?.setLayoutProperty("japan", "visibility", "visible");
+  };
 
   return (
     <div className="map-wrap">
